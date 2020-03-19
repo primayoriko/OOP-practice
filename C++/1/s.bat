@@ -1,1 +1,0 @@
-g++ -o m Fraction.cpp m.cpp
