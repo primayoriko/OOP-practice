@@ -1,11 +1,19 @@
 
 public class ScrapperThread extends Thread{
-    Scrapper scrapper;
-    ScrapperThread(Scrapper sc, String url, Scrapper.Num lowest){
-        this.scrapper = sc;
+    Server server;
+    String url;
+    ScrapperThread(Server server, String url){
+        this.server = server;
+        this.url = url;
     }
 
     public void run(){
-        this.scrapper.notify();
+        Website site = new Website(this.url);
+        int price = site.getPrice();
+        this.server.sendPrice(price);
+    }
+
+    public interface Server{
+        public void sendPrice(int price);
     }
 }

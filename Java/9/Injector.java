@@ -3,7 +3,7 @@ import java.util.TreeMap;
 import java.lang.reflect.*;
 
 public class Injector {
-    Map<Class, Object> container;
+    Map<String, Object> container;
     
     public Injector(){
         this.container = new TreeMap<>();
@@ -15,7 +15,9 @@ public class Injector {
     //          Jika ada 2 objek dengan kelas yang sama,
     //          inject dengan object terakhir yang di add ke daftar dependency
     void addDependencies(Object object){
-        this.container.put(object.getClass(), object);
+        String s = object.getClass().getCanonicalName();
+        // System.out.println(s);
+        this.container.put(s, object);
     }
     /*
       Menginjeksi dependencies yang telah dibuat ke dalam objek
@@ -30,9 +32,11 @@ public class Injector {
         Class c = object.getClass();
         Field[] f = c.getDeclaredFields();
         for(Field i : f){
+            String s = i.getType().getCanonicalName();
+            // System.out.println(s);
             i.setAccessible(true);
-            Object temp = container.get(i.getClass());
-            if(temp.equals(null)){
+            Object temp = container.get(s);
+            if(temp != null){
                 i.set(object, temp);
             }
         }

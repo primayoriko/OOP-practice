@@ -1,8 +1,8 @@
 import java.util.ArrayList;
 
-class Scrapper {
+class Scrapper implements ScrapperThread.Server{
     private ArrayList<String> urlList;
-    private int lowest;
+    private int lowest, cnt;
     public Scrapper() {
         urlList = new ArrayList<String>();
     }
@@ -11,32 +11,32 @@ class Scrapper {
         urlList.add(url);
     }
 
-    public class Num{
-        public int val;
-        Num(int n){
-            this.val = n;
-        }
+    @Override
+    public synchronized void sendPrice(int price){
+        this.lowest = Math.min(this.lowest, price);
+        this.cnt--;
+        this.notify();
     }
 
-    public synchronized int scrapLowestPrice() {
+    public int scrapLowestPrice() {
         // Kode berikut masih melakukan scrap ke banyak website
         // secara sekuensial. Agar lebih cepat, ubahlah kode di bawah ini
         // menjadi paralel menggunakan wait dan notify, dengan membuat
         // instance ScrapperThread
         // Hint: baca materi praktikum
         this.lowest = Integer.MAX_VALUE;
-        int cnt = urlList.size();
+        this.cnt = urlList.size();
         for (String url : urlList) {
             // Website website = new Website(url);
-            Thread findlow = new ScrapperThread(this, url, lowest);
+            Thread findlow = new ScrapperThread(this, url);
             findlow.start();
         }
-        while(cnt>0)
-            this.wait();
-        return lowest;
+        while(cnt>0){
+            try{
+                this.wait();
+            }
+            catch(Exception e){}
+        }    
+        return this.lowest;
     }
-
-    // public interface ScrapperListener{
-    //     public void findLowest();
-    // }
 }

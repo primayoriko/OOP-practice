@@ -8,6 +8,9 @@ public class Game{
             m.put(a, (freq==null)?1:freq+1);
         }
 
+        Object c;
+        String s = c;
+
         for(String a: qila){
             Integer freq = m.get(a);
             if(freq!=null && freq !=0){

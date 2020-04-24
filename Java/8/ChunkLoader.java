@@ -24,7 +24,7 @@ public class ChunkLoader implements Runnable {
         // 10,8
         // 6,12
         // Untuk setiap x dan y, tambahkan tree ke Chunk
-        List<String[]> pos;
+        List<String[]> pos = new ArrayList();
         try{
              pos = text.read();
         }
