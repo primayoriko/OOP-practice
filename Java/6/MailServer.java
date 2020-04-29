@@ -10,17 +10,21 @@ public class MailServer implements EventChannel {
     // menginisiasi daftar subscriber
   }
 
+  @Override
   public void addSubscriber(String topic, Subscriber s) {
+    if (!this.subscriberLists.containsKey(topic))
+      this.subscriberLists.put(topic, new ArrayList<>());
     this.subscriberLists.get(topic).add(s);
     // tambahkan s sebagai subscriber ke topic yang diberikan
   }
 
+  @Override
   public void sendEvent(String topic, Event event) {
     // untuk setiap subscriber s yang sudah subscribe ke topic yang diberikan,
     // panggil s.onEvent(event)
-    List<Subscriber> subs = subscriberLists.get(topic);
-    for (Subscriber s : subs) {
-        s.onEvent(event);
-    }
+    if (this.subscriberLists.containsKey(topic))
+      for (Subscriber s : subscriberLists.get(topic))
+          s.onEvent(event);
+    
   }
 }

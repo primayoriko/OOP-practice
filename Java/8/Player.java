@@ -13,14 +13,11 @@ public class Player {
         // TODO: Me-set timer untuk menginvoke checkLastActive
         //       dengen delay {timeout} ms
         //       dan diinvoke tiap {timeout} ms.
-        this.timer.cancel();
-        this.timer.schedule(new RTask(),timeout/1000000, timeout/1000000);
-    }
-
-    class RTask extends TimerTask{
-        public void run() {
-            checkLastActive();
-        }
+        this.timer.schedule(new TimerTask(){
+            public void run() {
+                checkLastActive();
+            }
+        }, timeout, timeout);
     }
 
     public void checkLastActive() {
@@ -29,7 +26,7 @@ public class Player {
         //       Gunakan System.nanoTIme() untuk mendapat waktu sekarang.
         if(this.lastActive < System.nanoTime() - this.timeout){
             logout();
-            timer.cancel();
+            this.timer.cancel();
         }
     }
 
